@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+    <title>College Prediction</title>
+</head>
+<body>
+    <div class="container">
+        <h2>College Prediction Form</h2>
+        <!-- {% if 'username' in session %}
+        <form method="post" action="/logout" class="logout-form">
+            <button type="submit">Logout</button>
+        </form>
+        {% endif %} -->
+        {% if 'username' in session %}
+        <button class="logout-button" onclick="location.href='/logout'">Logout</button>
+        {% endif %}
+        <form method="post">
+            <div class="input-group">
+                <label for="min_rank">Your MHT-CET Rank:</label>
+                <input type="number" id="min_rank" name="min_rank" required>
+            </div>
+            <div class="input-group">
+                <label for="min_score">Your MHT-CET Merit Score:</label>
+                <input type="number" id="min_score" name="min_score" step="0.01" required>
+            </div>
+            <div class="input-group">
+                <label for="seat_type">Category for Admission:</label>
+                <select id="seat_type" name="seat_type" required>
+                    {% for st in seat_type %}
+                    <option value="{{ st }}">{{ st }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="branch">Your Preferred Branch:</label>
+                <select id="branch" name="branch" required>
+                    {% for br in branch %}
+                    <option value="{{ br }}">{{ br }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" onclick="send_data()">Predict</button>
+        </form>
+        <div id="predictedResults">
+            <h3>Predicted Results</h3>
+            <!-- You can dynamically update and display results here -->
+            <p id="predictedPrice"></p>
+            <!-- <p id="otherPredictions">Other Predictions: ...</p> -->
+        </div>
+    </div>
+    <script>
+        function send_data() {
+            event.preventDefault();
+            var fd = new FormData(document.querySelector('form'));
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/predict', true);
+            document.getElementById("predictedPrice").innerHTML = "Wait a second";
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == XMLHttpRequest.DONE) {
+                    document.getElementById("predictedPrice").innerHTML = "Hi,Based on your input, the best college for you is:" + xhr.responseText +
+                     "Hope this information is useful to you , while searching for a college";
+                }
+            };
+            xhr.onload = function () { };
+            xhr.send(fd);
+        }
+    </script>
+</body>
+</html>
